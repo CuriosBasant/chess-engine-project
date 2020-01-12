@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="module" src="./index.js" defer></script>
+  <title>Chess Game</title>
+</head>
+
+<body>
+  <section id="game-container">
+    <div id="board-history">
+      <span class="profile-pic">&ZeroWidthSpace;</span clas>
+    </div>
+
+    <div class="player">
+      <!-- [0, 1, 2, 3, 12, 13, 18, 1230, 1387, 1388, 1390] + &#128102;&#127995; -->
+      <span class="profile-pic">&#128103;&#127995;</span>
+      <div>
+        <span class="user-name">Player-2</span>
+        <div class="captured-pieces"></div>
+      </div>
+    </div>
+
+    <div id="board"></div>
+
+    <div class="player">
+      <span class="profile-pic">&#128102;&#127995;</span>
+      <div>
+        <span class="user-name">Player-1</span>
+        <div class="captured-pieces"></div>
+      </div>
+    </div>
+
+    <nav id="buttons">
+      <div style="display: inline-block; width: auto;"></div>
+      <button class="using-icon" value="-1">chevron_left</button>
+      <button class="using-icon" value="1">chevron_right</button>
+    </nav>
+  </section>
+</body>
+
+</html>

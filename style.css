@@ -1,0 +1,182 @@
+html {
+  --theme-lightness: 40%;
+  --theme-color: hsl(190, 100%, var(--theme-lightness));
+
+  font-size: 62.5%;
+}
+body {
+  user-select: none;
+  padding: 0;
+  margin: 0;
+  background: url('./images/background.jpg') center;
+}
+
+body .using-icon {
+  all: unset;
+  font: 5em 'Material Icons';
+  cursor: pointer;
+}
+
+#game-container {
+  height: 100vh;
+  width: 50em;
+  background: #fff8;
+  margin: auto;
+}
+
+/* ----------------- History ----------------- */
+#board-history {
+  font: 1.1em "Fira Code", "Segoe UI";
+  padding: 1.5rem;
+  background: #0008;
+}
+#board-history span:first-child {
+  /* height: 1em; */
+  all: unset;
+  padding: .5em 0;
+}
+#board-history span {
+  padding: 0.5em 1em;
+  color: white;
+  border-radius: 0.5em;
+  /* letter-spacing: 0.05em; */
+  transition: .2s;
+}
+#board-history span.highlight:not(:first-child) {
+  
+  color: black;
+  background: #fff8;
+}
+
+/* ----------------- Dash Data ----------------- */
+.player {
+  display: flex;
+  font-family: "Segoe UI";
+  flex-direction: row;
+  padding: 1.5em;
+}
+.player .profile-pic {
+  font-size: 3em;
+  padding: .4rem .2rem;
+  border: .1rem solid #333;
+  background: white;
+}
+.player .profile-pic + div {
+  flex: 1;
+  font-size: 1.6em;
+  padding: 0 0.8em;
+}
+
+/* ----------------- Our Board ----------------- */
+#board {
+  --board-order: 8;
+
+  display: grid;
+  width: 100%;
+  height: 50em;
+  grid-template-columns: repeat(var(--board-order), 1fr);
+  grid-template-rows: repeat(var(--board-order), 1fr);
+  cursor: pointer;
+  background: url('./images/check_squares.png'), var(--theme-color);
+  background-size: calc(200% / var(--board-order));
+  counter-reset: num -1 alph;
+}
+
+/* ----------------- Board Squares ----------------- */
+#board .square {
+  position: relative;
+  font: 5em Chess;
+  display: flex;
+}
+#board > .squares:hover {
+  /* box-shadow: inset 0 0 0 0.1em #ffa; */
+  transform: scale(1.05)
+}
+#board .square.making-move {
+  z-index: 10;
+}
+#board .square.highlight {
+  background: radial-gradient(#ff99 40%, transparent);
+}
+#board .square.capture {
+  background: radial-gradient(#f662 50%, #f66);
+}
+#board .square.castle {
+}
+
+#board > .square:not(.home) span:not(.player-0) {
+  margin: auto auto 0 auto;
+  text-transform: lowercase;
+  -webkit-text-stroke: 0.025em #222;
+  transition: .2s ease-out transform;
+}
+#board .square.home span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  padding: 0.25em;
+  border-radius: 50%;
+  background: #0008;
+  transform: translate(-50%, -50%) !important ;
+}
+/* #board .square.show-path span::before {
+content: '⚫';• ● ⚫ ⬤ \2B24
+} */
+
+/* ----------------- Coordinates ----------------- */
+#board .square:nth-last-child(-n + 8)::after,
+#board .square:nth-child(8n + 1)::before {
+  /* display: block; */
+  position: absolute;
+  font: bold 0.25em arial;
+  color: var(--theme-color);
+}
+#board .square:nth-child(8n + 1)::before {
+  content: counter(num);
+  counter-increment: num /* -1 */;
+  transform: translate(25%, 15%);
+}
+#board .square:nth-last-child(-n + 8)::after {
+  counter-increment: alph;
+  content: counter(alph, lower-alpha);
+  top: 100%;
+  left: 100%;
+  transform: translate(-120%, -100%);
+}
+#board .square:nth-last-child(-n + 8):nth-child(odd)::after,
+#board .square:nth-child(16n + 9)::before {
+  --theme-lightness: 90%;
+  --theme-color: hsl(190, 100%, var(--theme-lightness));
+  /* color: red; */
+}
+
+/* ----------------- Piece Colors ----------------- */
+#board .square span.player-0 {
+  color: transparent;
+}
+#board .square span.player-1 {
+  color: white;
+}
+#board .square span.player-2 {
+  color: #333;
+}
+.square:nth-child(4) span {
+  /* transform: translate(); */
+}
+
+/* ----------------- Buttons ----------------- */
+#buttons {
+  display: flex;
+  background: #0015;
+}
+#buttons div {
+  flex: 1;
+}
+#buttons button {
+  padding: 0 0.25em;
+}
+#buttons button:hover {
+  background: #0011;
+}
