@@ -1,3 +1,16 @@
+@font-face{
+  font-family: Chess;
+  src: url(./fonts/Chess.otf);
+}
+@font-face {
+  font-family: "Material Icon";
+  src: url(./fonts/Material_Icons.ttf);
+}
+@font-face {
+  font-family: "Fira Code";
+  src: url(./fonts/Fira_Code.otf);
+}
+
 html {
   --theme-lightness: 40%;
   --theme-color: hsl(190, 100%, var(--theme-lightness));

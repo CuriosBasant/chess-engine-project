@@ -2,10 +2,9 @@
 const EMPTY_SQUARE = '_'
 
 class Piece {
-  static selected = false
-  static path = []
-  static toMove = null
   static nodes = null
+  static board = null
+
   constructor(index, name, symbol, player) {
     this.position = index
     this.name = name
@@ -24,6 +23,13 @@ class Piece {
 
   get indices () {
     return JSON.parse(this.node.parentElement.dataset.index)
+  }
+
+  moveTo (aurg) {
+    const [r1, c1] = this.indices, [r2, c2] = aurg
+
+    const [x, y] = [c2 - c1, r2 - r1].map(n => n * 62.5)
+    this.node.style.transform = `translate(${x}px, ${y}px)`
   }
 }
 
