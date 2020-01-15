@@ -3,10 +3,9 @@
 export default class Move {
   static homes = null
   static hasNavigated = false
-  constructor(index) {
-    this.from = index
-    this.to = null
-
+  constructor(from, to) {
+    this.from = from
+    this.to = to
   }
 
   static showHomes (bool = true) {

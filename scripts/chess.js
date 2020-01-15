@@ -5,7 +5,8 @@ export default class Chess {
       movement: './sound/movement.wav',
       check: './sound/check.wav',
       castle: './sound/castle.wav',
-      capture: './sound/capture.wav'
+      capture: './sound/capture.wav',
+      takingBack: './sound/taking_back.wav'
     }
     // this.soundToPlay = ''
   }

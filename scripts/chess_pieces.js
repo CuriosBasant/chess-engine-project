@@ -1,16 +1,14 @@
-// import { board } from './game_board.js'
-const EMPTY_SQUARE = '_'
+import Move from './movement.js'
 
 class Piece {
-  static nodes = null
-  static board = null
+  static onBoard = null
 
   constructor(index, name, symbol, player) {
     this.position = index
     this.name = name
     this.symbol = symbol
     this.side = player
-    this.node = Piece.nodes[index[0] * 8 + index[1]].firstElementChild
+    this.node = Piece.onBoard.squareNodes[index[0] * 8 + index[1]].firstElementChild
     this.putPiece()
 
   }
@@ -26,10 +24,27 @@ class Piece {
   }
 
   moveTo (aurg) {
-    const [r1, c1] = this.indices, [r2, c2] = aurg
+    Piece.onBoard.spliceHistory()
 
-    const [x, y] = [c2 - c1, r2 - r1].map(n => n * 62.5)
-    this.node.style.transform = `translate(${x}px, ${y}px)`
+    const [r2, c2] = aurg.indices
+    // const mT = Piece.onBoard.getPieceAtIndex(aurg)
+    // const history = document.getElementById('board-history')
+    const code = Piece.onBoard.history[-1].to.node
+    code.textContent =
+      (Piece.onBoard.totalMoves % 2 == 0 ? `${Piece.onBoard.totalMoves / 2 + 1}. ` : '') +
+      this.symbol +
+      String.fromCharCode(c2 + 97) +
+      Math.abs(r2 - 8)
+    Piece.onBoard.history[-1].from.node.appendChild(code)
+
+    Piece.onBoard.history.push(new Move(this, aurg))
+    Piece.onBoard.navigateTo(1)
+  }
+
+  invalid () {
+    if (this.node.classList.toggle('invalid')) {
+      setTimeout(() => { this.invalid() }, 200)
+    }
   }
 }
 
@@ -45,7 +60,8 @@ class Pawn extends Piece {
     this.canDouble = true
   }
 
-  calculateValidMoves (boardTurn, boardPieces) {
+  calculateValidMoves () {
+    const boardTurn = Piece.onBoard.turn
     const path = {
       'home': [],
       'capture': []
@@ -54,7 +70,7 @@ class Pawn extends Piece {
     let index = this.indices.slice()
     const hey = () => {
       index[0] += dir
-      const piece = boardPieces[index[0]][index[1]]
+      const piece = Piece.onBoard.getPieceAtIndex(index)
       if (piece.name == null) {
         path.home.push(piece.node)
       } else {
@@ -71,7 +87,7 @@ class Pawn extends Piece {
     for (const c of [-1, 2]) {
       index[1] += c
       if (index[1] < 0 || index[1] > 7) continue
-      const piece = boardPieces[index[0]][index[1]]
+      const piece = Piece.onBoard.getPieceAtIndex(index)
       if (!(piece.name == null || piece.side == boardTurn)) {
         path.capture.push(piece.node)
       }
@@ -86,9 +102,9 @@ class Knight extends Piece {
     super(position, 'Knight', 'N', player)
   }
 
-  calculateValidMoves (boardTurn, boardPieces) {
+  calculateValidMoves () {
     const direction = [[-1, -2], [-2, -1], [-2, 1], [-1, 2], [1, 2], [2, 1], [2, -1], [1, -2]]
-    const homes = getPieceHomes(this.indices, direction, boardTurn, boardPieces)
+    const homes = getPieceHomes(this.indices, direction)
 
     return homes
   }
@@ -99,9 +115,9 @@ class Bishop extends Piece {
     super(position, 'Bishop', 'B', player)
   }
 
-  calculateValidMoves (boardTurn, boardPieces) {
+  calculateValidMoves () {
     const direction = [[-1, -1], [-1, 1], [1, 1], [1, -1]]
-    const homes = getPieceHomes2D(this.indices, direction, boardTurn, boardPieces)
+    const homes = getPieceHomes2D(this.indices, direction)
 
     return homes
   }
@@ -113,9 +129,9 @@ class Rook extends Piece {
     this.couldCastle = true
   }
 
-  calculateValidMoves (boardTurn, boardPieces) {
+  calculateValidMoves () {
     const direction = [[-1, 0], [0, 1], [1, 0], [0, -1]]
-    const homes = getPieceHomes2D(this.indices, direction, boardTurn, boardPieces)
+    const homes = getPieceHomes2D(this.indices, direction)
 
     return homes
   }
@@ -126,11 +142,11 @@ class Queen extends Piece {
     super(position, 'Queen', 'Q', player)
   }
 
-  calculateValidMoves (boardTurn, boardPieces) {
+  calculateValidMoves () {
     // return Piece._getPath([[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]], this.indices.slice())
 
     const direction = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]]
-    const homes = getPieceHomes2D(this.indices, direction, boardTurn, boardPieces)
+    const homes = getPieceHomes2D(this.indices, direction)
 
     return homes
   }
@@ -143,9 +159,9 @@ class King extends Piece {
     this.canCastle = true
   }
 
-  calculateValidMoves (boardTurn, boardPieces) {
+  calculateValidMoves () {
     const direction = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]]
-    const homes = getPieceHomes(this.indices, direction, boardTurn, boardPieces)
+    const homes = getPieceHomes(this.indices, direction)
 
     return homes
   }
@@ -155,7 +171,7 @@ export default Piece
 export { Empty, Pawn, Knight, Bishop, Rook, Queen, King }
 
 const doesSqrExist = ind => ind.every(n => n > -1 && n < 8)
-function getPieceHomes (from, direction, boardTurn, boardPieces) {
+function getPieceHomes (from, direction) {
   const path = {
     'home': [],
     'capture': []
@@ -163,12 +179,12 @@ function getPieceHomes (from, direction, boardTurn, boardPieces) {
   for (const dir of direction) {
     let index = from.map((n, i) => n + dir[i])
     if (index.some(n => n < 0 || n > 7)) continue
-    const piece = boardPieces[index[0]][index[1]]
+    const piece = Piece.onBoard.getPieceAtIndex(index)
     if (piece.name == null) {
       path.home.push(piece.node)
       // index.classList.add('home')
       // Piece.path.push(index)
-    } else if (piece.side != boardTurn) {
+    } else if (piece.side != Piece.onBoard.turn) {
       // index.classList.add('capture')
       path.capture.push(piece.node)
     }
@@ -176,7 +192,7 @@ function getPieceHomes (from, direction, boardTurn, boardPieces) {
   return path
 }
 
-function getPieceHomes2D (from, direction, boardTurn, boardPieces) {
+function getPieceHomes2D (from, direction) {
   const path = {
     'home': [],
     'capture': []
@@ -184,13 +200,13 @@ function getPieceHomes2D (from, direction, boardTurn, boardPieces) {
   direction.forEach(dir => {
     let index = from.map((n, i) => n + dir[i])
     while (doesSqrExist(index)) {
-      const piece = boardPieces[index[0]][index[1]]
+      const piece = Piece.onBoard.getPieceAtIndex(index)
       if (piece.name == null) {
         path.home.push(piece.node)
         // index.classList.add('home')
         // Piece.path.push(index)
       } else {
-        if (piece.side != boardTurn) {
+        if (piece.side != Piece.onBoard.turn) {
           // index.classList.add('capture')
           path.capture.push(piece.node)
         }
