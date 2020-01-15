@@ -92,7 +92,7 @@ body .using-icon {
   cursor: pointer;
   background: url('./images/check_squares.png'), var(--theme-color);
   background-size: calc(200% / var(--board-order));
-  counter-reset: num -1 alph;
+  counter-reset: num 9 alph;
 }
 
 /* ----------------- Board Squares ----------------- */
@@ -148,7 +148,7 @@ content: '⚫';• ● ⚫ ⬤ \2B24
 }
 #board .square:nth-child(8n + 1)::before {
   content: counter(num);
-  counter-increment: num /* -1 */;
+  counter-increment: num -1;
   transform: translate(25%, 15%);
 }
 #board .square:nth-last-child(-n + 8)::after {
