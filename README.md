@@ -2,7 +2,7 @@
 A project created by CuriosBasant using JavaScript Modules and Classes
 
 Prerequisites to play the Game:
-1. Should have a Modern Browser (Chrome or Firefox).
+1. Should have a Modern Browser (Chrome,Firefox,safari and opera).
 2. For Chrome, you'll need to install an app called (Web Server for Chrome) to the browser. It is required to access the local files present in the project folder. But for Firefox, you doesn't need anything.
 
 Download the Web Server from here - https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb
